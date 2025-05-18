@@ -1,5 +1,8 @@
 // Used Modules
 use std::io;
+use crate::FgColor;
+use crate::AnsiFormat;
+
 
 
 
@@ -16,16 +19,29 @@ impl Transfer {
     /// and returns a new [Transfer]
     pub fn get_transfer() -> Transfer {
         println!(
-            "{}Choose method of transfer\n\
+            "{}{}Choose method of transfer{}\n\
             [L]ink\n\
             [C]opy\n\
-            [N]one{}",
-        "\x1b[93m","\x1b[0m");
+            {}[N]one (Default){}",
+            FgColor!(Fg::Purple),
+            AnsiFormat!(Underline),
+            AnsiFormat!(),
+            FgColor!(Fg::Yellow),
+            AnsiFormat!(),
+
+        );
 
         let mut transfer_buf = String::new();
-        io::stdin()
-            .read_line(&mut transfer_buf)
-            .expect("Error reading transfer");
+        match io::stdin().read_line(&mut transfer_buf) {
+            Ok(_) => {}
+            Err(_) => {
+                println!(
+                    "{}Reading failed{}",
+                    FgColor!(Fg::Red),
+                    FgColor!(),
+                );
+            }
+        }
 
         let transfer_choice = transfer_buf.as_bytes()[0];
 

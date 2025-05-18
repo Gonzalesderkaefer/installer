@@ -13,7 +13,7 @@ impl Ignored {
     /// Which contains the absolute path of the source and destination
     ///
     /// # Example
-    /// ```{.rs}
+    /// ```
     /// // paths have to be relative to $HOME
     /// let ign = Ignored::new("/Jazzian/dotfiles/vim", ".config/vim", "vim")
     ///         .expect("Failed to get Environment variable");

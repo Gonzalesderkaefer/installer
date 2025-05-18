@@ -1,14 +1,11 @@
 // Modules declarations
 mod packages;
 mod types;
+mod formatting;
 
 
+// Used modules and types
 
 fn main() {
-        println!(
-            "{}Choose method of transfer\n\
-            [L]ink\n\
-            [C]opy\n\
-            [N]one{}",
-        "\x1b[93m","\x1b[0m");
+    let transfer = types::transfer::Transfer::get_transfer();
 }
