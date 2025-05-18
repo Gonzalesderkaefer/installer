@@ -1,26 +1,15 @@
 /// This enum represents a Foreground color Text printed
 /// to the Terminal can have.
-pub enum FgColors {
-    Black,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Purple,
-    Cyan,
-    White,
-    Default,
-}
 #[macro_export]
 macro_rules! FgColor {
-    (FgColors::Black) => { "\x1b[30m" };
-    (FgColors::Red) => { "\x1b[31m" };
-    (FgColors::Green) => { "\x1b[32m" };
-    (FgColors::Yellow) => { "\x1b[33m" };
-    (FgColors::Blue) => { "\x1b[34m" };
-    (FgColors::Purple) => { "\x1b[35m" };
-    (FgColors::Cyan) => { "\x1b[36m" };
-    (FgColors::White) => { "\x1b[37m" };
+    (Fg::Black) => { "\x1b[30m" };
+    (Fg::Red) => { "\x1b[31m" };
+    (Fg::Green) => { "\x1b[32m" };
+    (Fg::Yellow) => { "\x1b[33m" };
+    (Fg::Blue) => { "\x1b[34m" };
+    (Fg::Purple) => { "\x1b[35m" };
+    (Fg::Cyan) => { "\x1b[36m" };
+    (Fg::White) => { "\x1b[37m" };
     () => { "\x1b[39m" };
 }
 
@@ -41,14 +30,14 @@ pub enum BgColors {
 
 #[macro_export]
 macro_rules! BgColor {
-    (BgColors::Black) => { "\x1b[40m" };
-    (BgColors::Red) => { "\x1b[41m" };
-    (BgColors::Green) => { "\x1b[42m" };
-    (BgColors::Yellow) => { "\x1b[43m" };
-    (BgColors::Blue) => { "\x1b[44m" };
-    (BgColors::Purple) => { "\x1b[45m" };
-    (BgColors::Cyan) => { "\x1b[46m" };
-    (BgColors::White) => { "\x1b[47m" };
+    (Bg::Black) => { "\x1b[40m" };
+    (Bg::Red) => { "\x1b[41m" };
+    (Bg::Green) => { "\x1b[42m" };
+    (Bg::Yellow) => { "\x1b[43m" };
+    (Bg::Blue) => { "\x1b[44m" };
+    (Bg::Purple) => { "\x1b[45m" };
+    (Bg::Cyan) => { "\x1b[46m" };
+    (Bg::White) => { "\x1b[47m" };
     () => { "\x1b[49m" };
 }
 
@@ -74,19 +63,19 @@ pub enum Formatting {
 
 #[macro_export]
 macro_rules! AnsiFormat {
-    (Formatting::Bold) => {"\x1b[1m"};
-    (Formatting::Faint) => {"\x1b[2m"};
-    (Formatting::Italic) => {"\x1b[3m"};
-    (Formatting::Underline) => {"\x1b[4m"};
-    (Formatting::BlinkS) => {"\x1b[5m"};
-    (Formatting::BlinkF) => {"\x1b[6m"};
-    (Formatting::Conceal) => {"\x1b[8m"};
-    (Formatting::Crossed) => {"\x1b[9m"};
-    (Formatting::BoldOff) => {"\x1b[22m"};
-    (Formatting::ItalicOff) => {"\x1b[23m"};
-    (Formatting::ULineOff) => {"\x1b[24m"};
-    (Formatting::BlinkOff) => {"\x1b[25m"};
-    (Formatting::ConcealOff) => {"\x1b[28m"};
-    (Formatting::CrossedOff) => {"\x1b[29m"};
+    (Bold) => {"\x1b[1m"};
+    (Faint) => {"\x1b[2m"};
+    (Italic) => {"\x1b[3m"};
+    (Underline) => {"\x1b[4m"};
+    (BlinkS) => {"\x1b[5m"};
+    (BlinkF) => {"\x1b[6m"};
+    (Conceal) => {"\x1b[8m"};
+    (Crossed) => {"\x1b[9m"};
+    (BoldOff) => {"\x1b[22m"};
+    (ItalicOff) => {"\x1b[23m"};
+    (ULineOff) => {"\x1b[24m"};
+    (BlinkOff) => {"\x1b[25m"};
+    (ConcealOff) => {"\x1b[28m"};
+    (CrossedOff) => {"\x1b[29m"};
     () => {"\x1b[0m"};
 }
