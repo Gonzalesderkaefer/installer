@@ -27,7 +27,7 @@ impl Ignored {
     /// ```
     ///
     /// Returns an Err if determining $HOME fails.
-    pub fn new( src: &str, dest: &str, name: &str) -> Result<Self, VarError> {
+    pub fn new(src: &str, dest: &str, name: &str) -> Result<Self, VarError> {
         // Get $HOME
         let homedir = {
             match env::var("HOME") {
@@ -60,7 +60,19 @@ impl Ignored {
     }
 
 
-    // TODO: Write proper docs!!!
+    /// This function applies the Operations defined
+    /// in the [Ignored], provided. Additionally you have
+    /// to supply a method of [Transfer] 
+    ///
+    /// # Example
+    /// ```
+    /// // paths have to be relative to $HOME
+    /// let ign = Ignored::new("/Jazzian/dotfiles/vim", ".config/vim", "vim")
+    ///         .expect("Failed to get Environment variable");
+    /// 
+    /// // This creates a symlink with the name of dest and the value of src
+    /// ign.apply(Transfer::Link);
+    /// ```
     pub fn apply(&self, method: Transfer) {
         // Create paths
         let srcpath = Path::new(&self.src);
@@ -105,8 +117,6 @@ impl Ignored {
             }
         };
 
-        // TODO: Proper error handling
-        //
         // Create parent directory if it does not exist
         match fs::exists(parent) {
             Ok(true) => {},
