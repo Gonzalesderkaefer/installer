@@ -1,5 +1,12 @@
 // Used modules
-use std::{env::{self, VarError}, path::Path};
+use std::{
+    env::{self, VarError},
+    fs,
+    os::unix::fs::symlink,
+    path::Path,
+};
+use super::transfer::Transfer;
+use crate::{utils::fileutils as fu, FgColor};
 
 
 pub struct Ignored {
@@ -53,8 +60,80 @@ impl Ignored {
     }
 
 
-    pub fn apply(&self, /* Transfer */) {
+    // TODO: Write proper docs!!!
+    pub fn apply(&self, method: Transfer) {
+        // Create paths
         let srcpath = Path::new(&self.src);
         let destpath = Path::new(&self.dest);
+
+
+        // Check if source exists
+        match fs::exists(srcpath) {
+            Ok(true) => {},
+            Ok(false) => {
+                println!("Source does not exist");
+                return;
+            },
+            Err(e) => {
+                println!("An error occured checking for existence: {e:?}");
+                return;
+            }
+        }
+
+
+        // Check if destination does not exists
+        match fs::exists(destpath) {
+            Ok(false) => {},
+            Ok(true) => {
+                println!("Destination does exist not moving");
+                return;
+            },
+            Err(e) => {
+                println!("An error occured checking for existence: {e:?}");
+                return;
+            }
+        }
+
+
+        let parent = {
+            match destpath.parent() {
+                Some(val) => val,
+                None => {
+                    println!("No permissison to write to '/'");
+                    return;
+                }
+            }
+        };
+
+        // TODO: Proper error handling
+        //
+        // Create parent directory if it does not exist
+        match fs::exists(parent) {
+            Ok(true) => {},
+            Ok(false) => {let _ = fs::create_dir_all(parent);},
+            Err(e) => {
+                println!(
+                    "{}An error occured checking for existence{}: {e:?}",
+                    FgColor!(Red),
+                    FgColor!(),
+                );
+                return;
+            }
+        }
+
+        // Transfer the file(s)
+        match method {
+            Transfer::Link => {
+                let _ = symlink(srcpath, destpath);
+            }
+            Transfer::Copy => {
+                if srcpath.is_dir() {
+                    fu::copy_dir_all(srcpath, destpath);
+                } else if srcpath.is_file() {
+                    let _ = fs::copy(srcpath, destpath);
+                }
+            }
+            _ => {}
+        }
     }
 }

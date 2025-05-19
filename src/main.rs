@@ -2,6 +2,7 @@
 mod packages;
 mod types;
 mod formatting;
+mod utils;
 
 
 // Used modules and types
