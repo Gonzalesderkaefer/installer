@@ -2,14 +2,14 @@
 /// to the Terminal can have.
 #[macro_export]
 macro_rules! FgColor {
-    (Fg::Black) => { "\x1b[30m" };
-    (Fg::Red) => { "\x1b[31m" };
-    (Fg::Green) => { "\x1b[32m" };
-    (Fg::Yellow) => { "\x1b[33m" };
-    (Fg::Blue) => { "\x1b[34m" };
-    (Fg::Purple) => { "\x1b[35m" };
-    (Fg::Cyan) => { "\x1b[36m" };
-    (Fg::White) => { "\x1b[37m" };
+    (Black) => { "\x1b[30m" };
+    (Red) => { "\x1b[31m" };
+    (Green) => { "\x1b[32m" };
+    (Yellow) => { "\x1b[33m" };
+    (Blue) => { "\x1b[34m" };
+    (Purple) => { "\x1b[35m" };
+    (Cyan) => { "\x1b[36m" };
+    (White) => { "\x1b[37m" };
     () => { "\x1b[39m" };
 }
 
@@ -30,14 +30,14 @@ pub enum BgColors {
 
 #[macro_export]
 macro_rules! BgColor {
-    (Bg::Black) => { "\x1b[40m" };
-    (Bg::Red) => { "\x1b[41m" };
-    (Bg::Green) => { "\x1b[42m" };
-    (Bg::Yellow) => { "\x1b[43m" };
-    (Bg::Blue) => { "\x1b[44m" };
-    (Bg::Purple) => { "\x1b[45m" };
-    (Bg::Cyan) => { "\x1b[46m" };
-    (Bg::White) => { "\x1b[47m" };
+    (Black) => { "\x1b[40m" };
+    (Red) => { "\x1b[41m" };
+    (Green) => { "\x1b[42m" };
+    (Yellow) => { "\x1b[43m" };
+    (Blue) => { "\x1b[44m" };
+    (Purple) => { "\x1b[45m" };
+    (Cyan) => { "\x1b[46m" };
+    (White) => { "\x1b[47m" };
     () => { "\x1b[49m" };
 }
 
