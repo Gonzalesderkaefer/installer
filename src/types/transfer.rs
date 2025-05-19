@@ -23,10 +23,10 @@ impl Transfer {
             [L]ink\n\
             [C]opy\n\
             {}[N]one (Default){}",
-            FgColor!(Fg::Purple),
+            FgColor!(Purple),
             AnsiFormat!(Underline),
             AnsiFormat!(),
-            FgColor!(Fg::Yellow),
+            FgColor!(Yellow),
             AnsiFormat!(),
 
         );
@@ -37,7 +37,7 @@ impl Transfer {
             Err(_) => {
                 println!(
                     "{}Reading failed{}",
-                    FgColor!(Fg::Red),
+                    FgColor!(Red),
                     FgColor!(),
                 );
             }
