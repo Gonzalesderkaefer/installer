@@ -14,20 +14,6 @@ macro_rules! FgColor {
 }
 
 
-/// This enum represents a Foreground color Text printed
-/// to the Terminal can have.
-pub enum BgColors {
-    Black,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Magenta,
-    Cyan,
-    White,
-    Default,
-}
-
 #[macro_export]
 macro_rules! BgColor {
     (Black) => { "\x1b[40m" };
@@ -40,27 +26,6 @@ macro_rules! BgColor {
     (White) => { "\x1b[47m" };
     () => { "\x1b[49m" };
 }
-
-/// This enum rersesents a Formatting option for text
-/// printed to the terminal
-pub enum Formatting {
-    ResetAll,
-    Bold,
-    Faint,
-    Italic,
-    Underline,
-    BlinkS,
-    BlinkF,
-    Conceal,
-    Crossed,
-    BoldOff,
-    ItalicOff,
-    ULineOff,
-    BlinkOff,
-    ConcealOff,
-    CrossedOff,
-}
-
 #[macro_export]
 macro_rules! AnsiFormat {
     (Bold) => {"\x1b[1m"};
