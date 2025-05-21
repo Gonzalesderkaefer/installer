@@ -7,75 +7,69 @@ use crate::{packages as pacs, FgColor};
 
 
 pub enum Distro<'a> {
-    Debian (
-        &'a[&'a str], // install cmd
-        &'a[&'a str], // update cmd
-        &'a[&'a str], // upgrade cmd
-    ),
-    Fedora (
-        &'a[&'a str], // install cmd
-        &'a[&'a str], // update cmd
-    ),
-    Arch (
-        &'a[&'a str], // install cmd
-        &'a[&'a str], // upgrade cmd
-        &'a[&'a str], // suffix
-    ),
+    Debian (_Distro<'a>),
+    Fedora (_Distro<'a>),
+    Arch (_Distro<'a>),
     Unknown,
 }
 
 
+pub struct _Distro<'a> {
+    install:  &'a[&'a str],
+    update:  &'a[&'a str],
+    upgrade:  Option<&'a[&'a str]>,
+    suffix: Option<&'a[&'a str]>,
+    basepkg: &'static[&'static str],
+    desktop: &'static[&'static str],
+}
 
 
 impl<'a> Distro<'a> {
-    /// This method gets the [Distro] that is running
-    /// on the system
     pub fn get_distro() -> Distro<'a> {
         // Read /etc/os-release
-        let contents = { 
-            match fs::read_to_string(String::from("/etc/os-release")) {
-                Ok(cont) => cont,
-                Err(e) => {
-                    println!(
-                        "{}Failed to read \"/etc/os-release\" {e:?}{}",
-                        FgColor!(Red),
-                        FgColor!()
-                    );
-                    return Self::Unknown;
-                },
-            }
-        };
+        let contents =
+            fs::read_to_string(String::from("/etc/os-release"))
+            .expect("File does not exist");
 
         // Search for distros
         if let Some(_) = contents.find("Debian") {
             return Self::Debian(
-                &["apt", "install", "-y"],
-                &["apt", "update", "-y"],
-                &["apt", "upgrade", "-y"],
+                _Distro {
+                    install: &["apt","install", "-y"],
+                    update: &["apt", "update", "-y"],
+                    upgrade: Some(&["apt", "upgrade", "-y"]),
+                    suffix: None,
+                    basepkg: pacs::DEB_BASE,
+                    desktop: pacs::DEB_DESKTOP,
+                }
+
             );
         }
         if let Some(_) = contents.find("Fedora") {
             return Self::Fedora(
-                &["dnf", "install", "-y"], 
-                &["dnf", "update", "-y"]
+                _Distro {
+                    install: &["dnf","install", "-y"],
+                    update: &["dnf", "update", "-y"],
+                    upgrade: None,
+                    suffix: None,
+                    basepkg: pacs::FED_BASE,
+                    desktop: pacs::FED_DESKTOP,
+                }
+
             );
         }
         if let Some(_) = contents.find("Arch Linux") {
             return Self::Arch(
-                &["pacman", "-S"],
-                &["pacman", "-Syu", "--noconfirm", "--needed"],
-                &["--noconfirm", "--needed"],
-            );
+                _Distro {
+                    install: &["pacman","-S"],
+                    update: &["pacman", "-Syu"],
+                    upgrade: None,
+                    suffix: Some(&["--noconfirm", "--needed"]),
+                    basepkg: pacs::ARCH_BASE,
+                    desktop: pacs::ARCH_DESKTOP,
+                }
+            )
         }
         return Self::Unknown;
-    }
-
-    pub fn packages(&self) -> &'static[&'static str] {
-        match self {
-            Self::Debian(_,_,_) => return pacs::DEB_BASE,
-            Self::Fedora(_,_) => return pacs::FED_BASE,
-            Self::Arch(_,_,_) => return pacs::ARCH_BASE,
-            Self::Unknown => &[""],
-        }
     }
 }

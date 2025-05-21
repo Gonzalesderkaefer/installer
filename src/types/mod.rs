@@ -1,4 +1,4 @@
 pub mod ignored;
 pub mod transfer;
-pub mod displayserver;
+pub mod display;
 pub mod distro;
