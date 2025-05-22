@@ -140,7 +140,8 @@ impl DspServer {
 
 
             }
-            Ok('t') | Ok('T') => {
+            Ok('t') | Ok('T') => Ok(Self::Tty),
+            Ok(_) => {
                 let wm = {
                     match  XorgWM::get(distro) {
                         Ok(wmy) => wmy,
@@ -155,10 +156,8 @@ impl DspServer {
                     Distro::Arch(_distro) => Ok(Self::Xorg(wm, pacs::ARCH_XORG)),
                     Distro::Unknown => todo!(),
                 }
-
-
             }
-            Ok(_) => todo!(),
+
             Err(_) => todo!(),
         }
     }
