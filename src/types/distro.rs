@@ -15,12 +15,12 @@ pub enum Distro<'a> {
 
 
 pub struct _Distro<'a> {
-    install:  &'a[&'a str],
-    update:  &'a[&'a str],
-    upgrade:  Option<&'a[&'a str]>,
-    suffix: Option<&'a[&'a str]>,
-    basepkg: &'static[&'static str],
-    desktop: &'static[&'static str],
+    pub install:  &'a[&'a str],
+    pub update:  &'a[&'a str],
+    pub upgrade:  Option<&'a[&'a str]>,
+    pub suffix: Option<&'a[&'a str]>,
+    pub basepkg: &'static[&'static str],
+    pub desktop: &'static[&'static str],
 }
 
 
