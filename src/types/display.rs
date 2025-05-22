@@ -21,7 +21,7 @@ impl WlComp {
             &[
                 "[H]yprland",
                 "[R]iver",
-                "[S]way",
+                "[S]way (Default)",
             ],
         );
         match chares {
@@ -68,7 +68,7 @@ impl XorgWM {
             &[
                 "[A]wesome",
                 "[B]spwm",
-                "[I]3",
+                "[I]3 (Default)",
             ],
         );
         match chares {
@@ -109,15 +109,58 @@ pub enum DspServer {
     Tty,
 }
 impl DspServer {
-    pub fn get(distro: &mut Distro) -> io::Result<Self> {
+    /// This function gets the Displayserver from the user
+    /// and needs a reference to a [Distro] 
+    /// To select the proper packages
+    pub fn get(distro: &Distro) -> io::Result<Self> {
         let charres = print_menu(
             "Please choose a displayserver",
             &[
-                "[X]org",
                 "[W]ayland",
-                "[T]ty"
+                "[T]ty",
+                "[X]org (Default)",
             ],
         );
+        match charres {
+            Ok('w') | Ok('W') => {
+                let comp = {
+                    match  WlComp::get(distro) {
+                        Ok(compy) => compy,
+                        Err(e) => { 
+                            return Err(e);
+                        }
+                    }
+                };
+                match distro {
+                    Distro::Debian(_distro) => Ok(Self::Wayland(comp, pacs::DEB_WAY)),
+                    Distro::Fedora(_distro) => Ok(Self::Wayland(comp, pacs::FED_WAY)),
+                    Distro::Arch(_distro) => Ok(Self::Wayland(comp, pacs::ARCH_WAY)),
+                    Distro::Unknown => todo!(),
+                }
+
+
+            }
+            Ok('t') | Ok('T') => {
+                let wm = {
+                    match  XorgWM::get(distro) {
+                        Ok(wmy) => wmy,
+                        Err(e) => { 
+                            return Err(e);
+                        }
+                    }
+                };
+                match distro {
+                    Distro::Debian(_distro) => Ok(Self::Xorg(wm, pacs::DEB_XORG)),
+                    Distro::Fedora(_distro) => Ok(Self::Xorg(wm, pacs::FED_XORG)),
+                    Distro::Arch(_distro) => Ok(Self::Xorg(wm, pacs::ARCH_XORG)),
+                    Distro::Unknown => todo!(),
+                }
+
+
+            }
+            Ok(_) => todo!(),
+            Err(_) => todo!(),
+        }
     }
 }
 
