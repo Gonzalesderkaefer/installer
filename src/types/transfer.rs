@@ -7,7 +7,6 @@ use crate::AnsiFormat;
 
 
 
-#[derive(Debug)]
 pub enum Transfer {
     Link,
     Copy,

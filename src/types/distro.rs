@@ -6,7 +6,6 @@ use crate::{packages as pacs, FgColor};
 
 
 
-#[derive(Debug)]
 pub enum Distro<'a> {
     Debian (_Distro<'a>),
     Fedora (_Distro<'a>),
@@ -15,7 +14,6 @@ pub enum Distro<'a> {
 }
 
 
-#[derive(Debug)]
 pub struct _Distro<'a> {
     pub install:  &'a[&'a str],
     pub update:  &'a[&'a str],
