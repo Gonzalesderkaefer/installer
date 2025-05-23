@@ -7,6 +7,7 @@ use std::io;
 /// This enum reprresents a Wayland compositor
 /// this compositor has an array of packages that are associated
 /// with it.
+#[derive(Debug)]
 pub enum WlComp {
     Hyprland(&'static[&'static str]),
     River(&'static[&'static str]),
@@ -54,6 +55,7 @@ impl WlComp {
 /// This enum reprresents a Xorg window manager
 /// this compositor has an array of packages that are associated
 /// with it.
+#[derive(Debug)]
 pub enum XorgWM {
     Awesome(&'static[&'static str]),
     Bspwm(&'static[&'static str]),
@@ -103,6 +105,7 @@ impl XorgWM {
 
 
 
+#[derive(Debug)]
 pub enum DspServer {
     Xorg (XorgWM, &'static[&'static str]),
     Wayland (WlComp, &'static[&'static str]),
