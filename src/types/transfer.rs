@@ -1,11 +1,13 @@
 // Used Modules
 use std::io;
+use crate::utils::menu::print_menu;
 use crate::FgColor;
 use crate::AnsiFormat;
 
 
 
 
+#[derive(Debug)]
 pub enum Transfer {
     Link,
     Copy,
@@ -18,33 +20,29 @@ impl Transfer {
     /// which transfer method to use
     /// and returns a new [Transfer]
     pub fn get_transfer() -> io::Result<Transfer> {
-        println!(
-            "{}{}Choose method of transfer{}\n\
-            [L]ink\n\
-            [C]opy\n\
-            {}[N]one (Default){}",
-            FgColor!(Purple),
-            AnsiFormat!(Underline),
-            AnsiFormat!(),
-            FgColor!(Yellow),
-            AnsiFormat!(),
-
+        let charres = print_menu(
+            "Choose a method of transfer",
+            &[
+                "[L]ink",
+                "[C]opy",
+                "[N]one (Default)",
+            ],
         );
 
-        let mut transfer_buf = String::new();
-        match io::stdin().read_line(&mut transfer_buf) {
-            Ok(_) => {}
-            Err(e) => {
-                return Err(e);
-            }
-        }
 
-        let transfer_choice = transfer_buf.as_bytes()[0];
+        let transfer_choice = {
+            match charres {
+                Ok(val) => val,
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+        };
 
         match transfer_choice {
-            b'L' | b'l' => Ok(Transfer::Link),
-            b'C' | b'c' => Ok(Transfer::Copy),
-            _ => Ok(Transfer::None),
+            'l' | 'L' => Ok(Self::Link),
+            'c' | 'C' => Ok(Self::Copy),
+            _ => Ok(Self::None),
         }
     }
 }
