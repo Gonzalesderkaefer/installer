@@ -17,7 +17,7 @@ impl Transfer {
     /// This function asks the user
     /// which transfer method to use
     /// and returns a new [Transfer]
-    pub fn get_transfer() -> Transfer {
+    pub fn get_transfer() -> io::Result<Transfer> {
         println!(
             "{}{}Choose method of transfer{}\n\
             [L]ink\n\
@@ -34,21 +34,17 @@ impl Transfer {
         let mut transfer_buf = String::new();
         match io::stdin().read_line(&mut transfer_buf) {
             Ok(_) => {}
-            Err(_) => {
-                println!(
-                    "{}Reading failed{}",
-                    FgColor!(Red),
-                    FgColor!(),
-                );
+            Err(e) => {
+                return Err(e);
             }
         }
 
         let transfer_choice = transfer_buf.as_bytes()[0];
 
         match transfer_choice {
-            b'L' | b'l' => Transfer::Link,
-            b'C' | b'c' => Transfer::Copy,
-            _ => Transfer::None,
+            b'L' | b'l' => Ok(Transfer::Link),
+            b'C' | b'c' => Ok(Transfer::Copy),
+            _ => Ok(Transfer::None),
         }
     }
 }
