@@ -128,7 +128,7 @@ impl<'a> System <'a> {
                     pacs.push(var);
                 }
             }
-            DspServer::Tty => todo!(), // TODO: Figure out what to do here.
+            DspServer::Desktop => todo!(), // TODO: Figure out what to do here.
         }
 
         // Append suffix

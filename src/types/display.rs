@@ -106,7 +106,7 @@ impl XorgWM {
 pub enum DspServer {
     Xorg (XorgWM, &'static[&'static str]),
     Wayland (WlComp, &'static[&'static str]),
-    Tty,
+    Desktop,
 }
 impl DspServer {
     /// This function gets the Displayserver from the user
@@ -140,7 +140,7 @@ impl DspServer {
 
 
             }
-            Ok('t') | Ok('T') => Ok(Self::Tty),
+            Ok('t') | Ok('T') => Ok(Self::Desktop),
             Ok(_) => {
                 let wm = {
                     match  XorgWM::get(distro) {
