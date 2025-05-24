@@ -108,6 +108,10 @@ impl<'a> System <'a> {
                     suffix = _distro.suffix;
                 }
                 Distro::Unknown => {
+                    println!(
+                        "{}Distro is unknown not installing{}",
+                        FgColor!(Red),
+                        FgColor!());
                     return;
                 }
             }
