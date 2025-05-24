@@ -52,42 +52,65 @@ impl<'a> System <'a> {
         // Get reference to suffix
         let mut suffix: Option<&'a [&'a str]> = None;
 
-        // Add install cmd and base packs
-        match &self.distro {
-            Distro::Debian(_distro) => {
-                // Add install cmd
-                for var in _distro.install {
-                    pacs.push(var);
+
+        if let DspServer::Desktop = &self.display {
+             let dist = {
+                 match &self.distro {
+                    Distro::Debian(_distro) => _distro,
+                    Distro::Fedora(_distro) => _distro,
+                    Distro::Arch(_distro) => _distro,
+                    Distro::Unknown => {
+                        return;
+                    }
                 }
-                // Add packs
-                for var in _distro.basepkg {
-                    pacs.push(var);
+             };
+
+             for var in dist.desktop {
+                 pacs.push(var);
+             }
+
+
+
+        } else {
+            // Add install cmd and base packs
+            match &self.distro {
+                Distro::Debian(_distro) => {
+                    // Add install cmd
+                    for var in _distro.install {
+                        pacs.push(var);
+                    }
+                    // Add packs
+                    for var in _distro.basepkg {
+                        pacs.push(var);
+                    }
+                    suffix = _distro.suffix;
                 }
-                suffix = _distro.suffix;
+                Distro::Fedora(_distro) => {
+                    // Add install cmd
+                    for var in _distro.install {
+                        pacs.push(var);
+                    }
+                    // Add packs
+                    for var in _distro.basepkg {
+                        pacs.push(var);
+                    }
+                    suffix = _distro.suffix;
+                }
+                Distro::Arch(_distro) => {
+                    // Add install cmd
+                    for var in _distro.install {
+                        pacs.push(var);
+                    }
+                    // Add packs
+                    for var in _distro.basepkg {
+                        pacs.push(var);
+                    }
+                    suffix = _distro.suffix;
+                }
+                Distro::Unknown => {
+                    return;
+                }
             }
-            Distro::Fedora(_distro) => {
-                // Add install cmd
-                for var in _distro.install {
-                    pacs.push(var);
-                }
-                // Add packs
-                for var in _distro.basepkg {
-                    pacs.push(var);
-                }
-                suffix = _distro.suffix;
-            }
-            Distro::Arch(_distro) => {
-                // Add install cmd
-                for var in _distro.install {
-                    pacs.push(var);
-                }
-                // Add packs
-                for var in _distro.basepkg {
-                    pacs.push(var);
-                }
-                suffix = _distro.suffix;
-            }
-            Distro::Unknown => todo!(), // TODO: Figure out what to do here.
         }
 
 
@@ -128,7 +151,7 @@ impl<'a> System <'a> {
                     pacs.push(var);
                 }
             }
-            DspServer::Desktop => todo!(), // TODO: Figure out what to do here.
+            DspServer::Desktop => {}
         }
 
         // Append suffix
