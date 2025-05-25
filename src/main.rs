@@ -7,31 +7,18 @@ mod def;
 
 
 // Used modules and types
-use types::{system::System};
+use types::{customized::create_customized, system::System};
 use utils::fileutils as fu;
 use std::{
      env, fs, os::unix, path
 };
 
 
-
-
 fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ignored>*/) {
     // Getting home directory
-    let home = {
-        match env::var("HOME") {
-            Ok(var) => var,
-            Err(_) => {
-                println!(
-                    "{}Could not get $HOME{}",
-                    FgColor!(Red),
-                    FgColor!(),
-                );
-                return;
+    let home = sys.home.clone();
 
-            }
-        }
-    };
+
 
     // Build source directory
     let mut srcbuf = path::PathBuf::new();
@@ -86,16 +73,6 @@ fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ign
         }
     }
 
-    // Open dest dir
-    let cfgdir = fs::read_dir(destpath);
-
-
-
-
-
-
-
-
     match sys.transfer {
         types::transfer::Transfer::Link => {
             for elemres in dotdir {
@@ -128,6 +105,7 @@ fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ign
                 }
             }
         }
+
         types::transfer::Transfer::Copy => {
             for elemres in dotdir {
                 // Unwrap elem
@@ -147,12 +125,34 @@ fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ign
 
 }
 
+fn make_customized(sys: &System) {
+    // Create customized files
+    for tup in def::CUSTOMIZED {
+        create_customized(tup.0, tup.1, tup.2);
+    }
+
+    // Getting home
+    let home = sys.home.clone();
+
+
+}
+
+
 fn main() {
+    // Get system from user
     let sys = {
         match System::get() {
             Ok(a) => a,
             Err(_) => return,
         }
     };
+
+    // Move dotfiles
     move_files(&sys, def::CFGSRC, def::CFGDEST);
+
+    // Move scripts
+    move_files(&sys, def::BINSRC, def::BINDEST);
+
+
+
 }
