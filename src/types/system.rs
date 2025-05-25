@@ -7,7 +7,7 @@ use std::{io, process::Command, };
 pub struct System<'a> {
     distro: Distro<'a>,
     display: DspServer,
-    transfer: Transfer
+    pub transfer: Transfer
 }
 
 impl<'a> System <'a> {
