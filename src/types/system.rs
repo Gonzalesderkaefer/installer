@@ -2,16 +2,17 @@ use crate::FgColor;
 
 // Used modules
 use super::{display::DspServer, display::WlComp, display::XorgWM, distro::Distro, transfer::Transfer, };
-use std::{io, process::Command, };
+use std::{io::Error, io, process::Command };
 
 pub struct System<'a> {
     distro: Distro<'a>,
-    display: DspServer,
+    pub home: String,
+    pub display: DspServer,
     pub transfer: Transfer
 }
 
 impl<'a> System <'a> {
-    pub fn get() -> io::Result<Self> {
+    pub fn get() -> Result<Self, Error> {
         // Store distro
         let dist = Distro::get_distro();
 
@@ -26,9 +27,24 @@ impl<'a> System <'a> {
             }
         };
 
+        // Get the home dir
+        let hme = {
+            match std::env::var("HOME") {
+                Ok(h) => h,
+                Err(e) => {
+                    return match e {
+                        std::env::VarError::NotPresent => 
+                            Err(std::io::Error::new(io::ErrorKind::NotFound, e)),
+                        std::env::VarError::NotUnicode(_) => 
+                            Err(std::io::Error::new(io::ErrorKind::InvalidData, e))
+                    }
+                }
+            }
+        };
+
+
 
         // Get The transfermethod
-
         let tr = {
             match Transfer::get_transfer() {
                 Ok(value) => value,
@@ -40,6 +56,7 @@ impl<'a> System <'a> {
 
         return Ok(System {
             distro: dist,
+            home: hme,
             display: dsp,
             transfer: tr,
         });
