@@ -16,7 +16,7 @@ use std::{
 
 
 
-fn move_cfgs(sys: &System, /*ignored:  &HashMap<bool, Ignored>*/) {
+fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ignored>*/) {
     // Getting home directory
     let home = {
         match env::var("HOME") {
@@ -36,14 +36,14 @@ fn move_cfgs(sys: &System, /*ignored:  &HashMap<bool, Ignored>*/) {
     // Build source directory
     let mut srcbuf = path::PathBuf::new();
     srcbuf.push(&home);
-    srcbuf.push(def::CFGSRC);
+    srcbuf.push(src);
     let srcpath = srcbuf.as_path();
 
 
     // Build dest directory
     let mut destbuf = path::PathBuf::new();
     destbuf.push(&home);
-    destbuf.push(def::CFGDEST);
+    destbuf.push(dest);
     let destpath = destbuf.as_path();
 
 
@@ -116,7 +116,6 @@ fn move_cfgs(sys: &System, /*ignored:  &HashMap<bool, Ignored>*/) {
                 }
 
                 match unix::fs::symlink(elem.path(), dest) {
-                    Ok(_) => todo!(),
                     Err(e) => {
                         println!(
                             "{}Could not symlink: {e:?} {}",
@@ -125,6 +124,7 @@ fn move_cfgs(sys: &System, /*ignored:  &HashMap<bool, Ignored>*/) {
                         );
                         continue;
                     }
+                    Ok(_) => {},
                 }
             }
         }
@@ -148,15 +148,11 @@ fn move_cfgs(sys: &System, /*ignored:  &HashMap<bool, Ignored>*/) {
 }
 
 fn main() {
-    //let transfer = types::transfer::Transfer::get_transfer();
-    //let char = utils::menu::print_menu("Choose a compositor", 
-        //&["[H]yprland","[R]iver","[S]way",]);
-
     let sys = {
         match System::get() {
             Ok(a) => a,
             Err(_) => return,
         }
     };
-    move_cfgs(&sys);
+    move_files(&sys, def::CFGSRC, def::CFGDEST);
 }
