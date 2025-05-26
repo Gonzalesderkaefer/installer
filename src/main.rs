@@ -10,7 +10,7 @@ mod def;
 use types::{customized::create_customized, system::System};
 use utils::fileutils::{self as fu, search_replace};
 use std::{
-     env, fs, os::unix, path::{self, PathBuf}
+     env, fs, os::unix, path::{self, Path, PathBuf}
 };
 
 
@@ -142,7 +142,7 @@ fn make_customized(sys: &System) {
 
     match &sys.display {
         types::display::DspServer::Xorg(xorg_wm, _) => {
-            search_replace("&& \\(.*;", customizedpath, "startx");
+            search_replace("\\&\\& \\(.*;", customizedpath, "startx");
             // Build customized.sh path
             let mut xinitbuf = PathBuf::new();
             xinitbuf.push(&home);
@@ -162,18 +162,18 @@ fn make_customized(sys: &System) {
         types::display::DspServer::Wayland(wl_comp, _) => {
             match wl_comp {
                 types::display::WlComp::Hyprland(_) => 
-                    search_replace("&& \\(.*;", customizedpath, "&& (Hyprland;"),
+                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (Hyprland;"),
 
                 types::display::WlComp::River(_) => 
-                    search_replace("&& \\(.*;", customizedpath, "&& (river;"),
+                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (river;"),
 
                 types::display::WlComp::Sway(_) => 
-                    search_replace("&& \\(.*;", customizedpath, "&& (sway;"),
+                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (sway;"),
 
             }
         }
         types::display::DspServer::Desktop => {
-            search_replace("&& \\(.*\\)", customizedpath, "");
+            search_replace("\\&\\& \\(.*\\)", customizedpath, "");
         },
     }
 
@@ -191,14 +191,24 @@ fn main() {
     };
 
     // Move dotfiles
-    move_files(&sys, def::CFGSRC, def::CFGDEST);
+    //move_files(&sys, def::CFGSRC, def::CFGDEST);
 
     // Move scripts
-    move_files(&sys, def::BINSRC, def::BINDEST);
+    //move_files(&sys, def::BINSRC, def::BINDEST);
 
     // Create the custom files
     make_customized(&sys);
+    /*
+    let re = regex::Regex::new("&& \\(.*;").expect("compilation failed");
+    let line = "[ \"$(tty)\" = \"/dev/tty1\" ] && (Hyprland; killshells)";
+    let mat = re.find(line).expect("parsing Failed");
+    let mut changed = String::from(line);
+    changed.replace_range(mat.start()..mat.end(), "&& (startx;");
 
 
 
+    println!("{}", line);
+    println!("First: {}, Second: {}", mat.start(), mat.end());
+    println!("{}", changed);
+    */
 }
