@@ -7,24 +7,18 @@ use std::path::Path;
 use std::path::PathBuf;
 
 pub fn create_customized(path: &str, contents: &str, mode: u32) {
-    // Check if path starts with /
-    if path.as_bytes()[0] != b'/' {
-        println!("Error: path has to start with '/'");
-        return;
-    }
-
-
     // Build full path and parent
-    let mut homestr: String;
+    let mut homebuf = PathBuf::new();
     match env::var("HOME") {
-        Ok(val) => {homestr = val;}
+        Ok(val) => {
+            homebuf.push(val);
+        }
         Err(e) => {
             println!("Error: could'nt get env var: {e}");
             return;
         }
     }
-    homestr.push_str(path);
-    let homebuf = PathBuf::from(&homestr);
+    homebuf.push(path);
     //homebuf.push(path);
     let fullpath = homebuf.as_path();
     let parent = {

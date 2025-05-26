@@ -2,13 +2,13 @@
 /// If file paths are used make then relative to $HOME
 
 /// The source of all files that will land in ~/.config or similar
-pub static CFGSRC: &'static str = "Documents/code/Jazzian/dotfiles/config";
-pub static CFGDEST: &'static str = "Documents/code/Jazzian/.testdir";
+pub static CFGSRC: &'static str = "Jazzian/dotfiles/config/";
+pub static CFGDEST: &'static str = ".config/";
 
 
 /// Custom scripts
-pub static BINSRC: &'static str = "Documents/code/Jazzian/dotfiles/bin";
-pub static BINDEST: &'static str = "Documents/code/Jazzian/.testbin";
+pub static BINSRC: &'static str = "Jazzian/dotfiles/bin/";
+pub static BINDEST: &'static str = ".local/bin/";
 
 
 

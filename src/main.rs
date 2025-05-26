@@ -8,9 +8,9 @@ mod def;
 
 // Used modules and types
 use types::{customized::create_customized, system::System};
-use utils::fileutils as fu;
+use utils::fileutils::{self as fu, search_replace};
 use std::{
-     env, fs, os::unix, path
+     env, fs, os::unix, path::{self, PathBuf}
 };
 
 
@@ -134,6 +134,49 @@ fn make_customized(sys: &System) {
     // Getting home
     let home = sys.home.clone();
 
+    // Build customized.sh path
+    let mut customizedbuf = PathBuf::new();
+    customizedbuf.push(&home);
+    customizedbuf.push(".customized.sh");
+    let customizedpath = customizedbuf.as_path();
+
+    match &sys.display {
+        types::display::DspServer::Xorg(xorg_wm, _) => {
+            search_replace("&& \\(.*;", customizedpath, "startx");
+            // Build customized.sh path
+            let mut xinitbuf = PathBuf::new();
+            xinitbuf.push(&home);
+            xinitbuf.push(".xinitrc");
+            let xinitpath = xinitbuf.as_path();
+
+            match xorg_wm {
+                types::display::XorgWM::Awesome(_) =>
+                    search_replace("exec .*", xinitpath, "exec awesome"),
+                types::display::XorgWM::Bspwm(_) =>
+                    search_replace("exec .*", xinitpath, "exec bspwm"),
+                types::display::XorgWM::I3(_) =>
+                    search_replace("exec .*", xinitpath, "exec i3"),
+
+            }
+        }
+        types::display::DspServer::Wayland(wl_comp, _) => {
+            match wl_comp {
+                types::display::WlComp::Hyprland(_) => 
+                    search_replace("&& \\(.*;", customizedpath, "&& (Hyprland;"),
+
+                types::display::WlComp::River(_) => 
+                    search_replace("&& \\(.*;", customizedpath, "&& (river;"),
+
+                types::display::WlComp::Sway(_) => 
+                    search_replace("&& \\(.*;", customizedpath, "&& (sway;"),
+
+            }
+        }
+        types::display::DspServer::Desktop => {
+            search_replace("&& \\(.*\\)", customizedpath, "");
+        },
+    }
+
 
 }
 
@@ -152,6 +195,9 @@ fn main() {
 
     // Move scripts
     move_files(&sys, def::BINSRC, def::BINDEST);
+
+    // Create the custom files
+    make_customized(&sys);
 
 
 
