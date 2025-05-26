@@ -3,7 +3,7 @@ mod packages;
 mod types;
 mod formatting;
 mod utils;
-mod def;
+mod config;
 
 
 // Used modules and types
@@ -127,7 +127,7 @@ fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ign
 
 fn make_customized(sys: &System) {
     // Create customized files
-    for tup in def::CUSTOMIZED {
+    for tup in config::CUSTOMIZED {
         create_customized(tup.0, tup.1, tup.2);
     }
 
