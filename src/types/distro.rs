@@ -62,7 +62,7 @@ impl<'a> Distro<'a> {
             return Self::Arch(
                 _Distro {
                     install: &["pacman","-S"],
-                    update: &["pacman", "-Syu"],
+                    update: &["pacman", "-Syu", "--noconfirm", "--needed"],
                     upgrade: None,
                     suffix: Some(&["--noconfirm", "--needed"]),
                     basepkg: pacs::ARCH_BASE,

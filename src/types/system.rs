@@ -214,4 +214,90 @@ impl<'a> System <'a> {
             }
         }
     }
+
+    pub fn update(&self) {
+
+        // Get distro
+        let dist = {
+            match &self.distro {
+                Distro::Debian(_distro) => _distro,
+                Distro::Fedora(_distro) => _distro,
+                Distro::Arch(_distro) => _distro,
+                Distro::Unknown => {
+                    return;
+                }
+            }
+        };
+
+        // Perform update
+        let updateres = Command::new("sudo")
+            .args(dist.update)
+            .spawn();
+
+        let mut update = {
+            match updateres {
+                Ok(x) => x,
+                Err(e) => {
+                    println!(
+                        "{}Subproc creation failed: {e:?}{}", 
+                        FgColor!(Red),
+                        FgColor!(),
+                    );
+                    return ;
+                },
+            }
+        };
+
+
+        // Wait for subproc to finish
+        match update.wait() {
+            Ok(_) => {}
+            Err(e) => {
+                println!(
+                    "{}Command was not running {e:?}{}",
+                    FgColor!(Red),
+                    FgColor!(),
+                );
+            }
+        }
+
+
+        // Check if upgrade is neccesary
+        match dist.upgrade {
+            Some(x) => {
+                let updateres = Command::new("sudo")
+                    .args(x)
+                    .spawn();
+
+                let mut update = {
+                    match updateres {
+                        Ok(x) => x,
+                        Err(e) => {
+                            println!(
+                                "{}Subproc creation failed: {e:?}{}", 
+                                FgColor!(Red),
+                                FgColor!(),
+                            );
+                            return ;
+                        },
+                    }
+                };
+
+                // Wait for subproc to finish
+                match update.wait() {
+                    Ok(_) => {}
+                    Err(e) => {
+                        println!(
+                            "{}Command was not running {e:?}{}",
+                            FgColor!(Red),
+                            FgColor!(),
+                        );
+                    }
+                }
+
+
+            }
+            None => {}
+        }
+    }
 }
