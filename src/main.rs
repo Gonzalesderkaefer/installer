@@ -9,12 +9,10 @@ mod config;
 // Used modules and types
 use types::{customized::create_customized, system::System};
 use utils::fileutils::{self as fu, search_replace};
-use std::{
-     env, fs, os::unix, path::{self, Path, PathBuf}
-};
+use std::{fs, os::unix, path::{self, PathBuf}};
 
 
-fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<bool, Ignored>*/) {
+fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<OsString, Ignored>*/) {
     // Getting home directory
     let home = sys.home.clone();
 
@@ -190,25 +188,18 @@ fn main() {
         }
     };
 
-    // Move dotfiles
-    //move_files(&sys, def::CFGSRC, def::CFGDEST);
+    // Update system
+    sys.update();
+
+    // Install packages
+    sys.install();
+
+    // Move config files
+    move_files(&sys, config::CFGSRC, config::CFGDEST);
 
     // Move scripts
-    //move_files(&sys, def::BINSRC, def::BINDEST);
+    move_files(&sys, config::BINSRC, config::BINDEST);
 
-    // Create the custom files
+    // Create customized files
     make_customized(&sys);
-    /*
-    let re = regex::Regex::new("&& \\(.*;").expect("compilation failed");
-    let line = "[ \"$(tty)\" = \"/dev/tty1\" ] && (Hyprland; killshells)";
-    let mat = re.find(line).expect("parsing Failed");
-    let mut changed = String::from(line);
-    changed.replace_range(mat.start()..mat.end(), "&& (startx;");
-
-
-
-    println!("{}", line);
-    println!("First: {}, Second: {}", mat.start(), mat.end());
-    println!("{}", changed);
-    */
 }
