@@ -16,8 +16,6 @@ fn move_files(sys: &System, src: &str, dest: &str /*ignored:  &HashMap<OsString,
     // Getting home directory
     let home = sys.home.clone();
 
-
-
     // Build source directory
     let mut srcbuf = path::PathBuf::new();
     srcbuf.push(&home);
@@ -171,11 +169,9 @@ fn make_customized(sys: &System) {
             }
         }
         types::display::DspServer::Desktop => {
-            search_replace("\\&\\& \\(.*\\)", customizedpath, "");
+            search_replace("\\&\\& \\(.*\\)", customizedpath, "(;)");
         },
     }
-
-
 }
 
 
