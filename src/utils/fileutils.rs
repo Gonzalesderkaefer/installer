@@ -122,6 +122,7 @@ pub fn search_replace(tosearch: &str, path: &Path, replace: &str){
             Ok(_) => {}
             Err(e) => {
                 println!("Failed to read {path:?}: {e:?}");
+                return;
             }
         }
     };

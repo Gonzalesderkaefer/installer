@@ -169,7 +169,7 @@ fn make_customized(sys: &System) {
             }
         }
         types::display::DspServer::Desktop => {
-            search_replace("\\&\\& \\(.*\\)", customizedpath, "(;)");
+            search_replace("\\&\\& \\(.*\\)", customizedpath, "");
         },
     }
 }
