@@ -3,7 +3,31 @@ use std::{
     fs::{self, File}, io::{Read, Write}, path::Path
 };
 
+use crate::FgColor;
+
 pub fn copy_dir_all(src: &Path, dest: &Path) {
+    // Check if src exists
+    match fs::exists(src) {
+        Ok(true) => {}
+        Ok(false) => {
+            println!(
+                "{}{src:?} does not exist{}",
+                FgColor!(Red),
+                FgColor!(),
+            );
+            return;
+        }
+        Err(e) => {
+            println!(
+                "{}Unable to determine if source exists {e:?} {}",
+                FgColor!(Red),
+                FgColor!(),
+            );
+            return;
+        }
+    }
+
+
     // Check if dest will have new basename
     // or keep the old one
     if dest.is_dir() {
