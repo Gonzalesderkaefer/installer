@@ -67,37 +67,37 @@ pub static GTK3_CONFIG: &'static str = "[Settings]\n\
 pub static CUSTOMIZED: &'static [(&str, &str, u32)] =
 &[
     // Customized files for window managers/compositors
-    (".config/i3/customzied/customzied", "", 0644),
-    (".config/bspwm/customzied/customzied", "", 0644),
-    (".config/awesome/customzied/customzied.lua", "", 0644),
-    (".config/sway/customzied/customzied", "", 0644),
-    (".config/hypr/customzied/customzied", "", 0644),
-    (".config/river/customzied/customzied", "", 0644),
+    (".config/i3/customzied/customzied", "", 0o644),
+    (".config/bspwm/customzied/customzied", "", 0o644),
+    (".config/awesome/customzied/customzied.lua", "", 0o644),
+    (".config/sway/customzied/customzied", "", 0o644),
+    (".config/hypr/customzied/customzied", "", 0o644),
+    (".config/river/customzied/customzied", "", 0o644),
 
 
     // Customized shell files
-    (".customized.sh", CUSTOMIZED_SH, 0644),
-    (".customrc", "", 0644),
-    ("customenv",  "export BROWSER_PREFIX=\"firefox\"", 0644),
+    (".customized.sh", CUSTOMIZED_SH, 0o644),
+    (".customrc", "", 0o644),
+    ("customenv",  "export BROWSER_PREFIX=\"firefox\"", 0o644),
 
 
     // X11 Startup
-    (".local/bin/x11startup", X11STARTUP, 0755),
+    (".local/bin/x11startup", X11STARTUP, 0o755),
 
 
     // Xinitrc
-    (".xinitrc", STARTX_CONTENT, 0644),
+    (".xinitrc", STARTX_CONTENT, 0o644),
 
 
     // Myterm
-    (".local/bin/myterm", MYTERM_CONTENT, 0755),
+    (".local/bin/myterm", MYTERM_CONTENT, 0o755),
 
 
     // GTK3
-    (".config/gtk-3.0/settings.ini", GTK3_CONFIG, 0644),
+    (".config/gtk-3.0/settings.ini", GTK3_CONFIG, 0o644),
 
 
     // Menus
-    (".local/bin/mdmenu", MDMENU_CONTENT, 0755),
-    (".local/bin/mdrun", MDRUN_CONTENT, 0755),
+    (".local/bin/mdmenu", MDMENU_CONTENT, 0o755),
+    (".local/bin/mdrun", MDRUN_CONTENT, 0o755),
 ];
