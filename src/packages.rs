@@ -45,7 +45,7 @@ pub const DEB_BASE: &'static[&'static str] = &[
     "acpid",
     "acpi",
     "linux-cpupower",
-    "cpufrequtils",
+    //"cpufrequtils",
     "openssh-server",
     "nnn",
     "fzf",

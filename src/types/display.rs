@@ -74,9 +74,9 @@ impl XorgWM {
         match chares {
             Ok('a') | Ok('A') =>
                 match distro {
-                    Distro::Debian(_distro) => Ok(Self::Awesome(pacs::DEB_I3)),
-                    Distro::Fedora(_distro) => Ok(Self::Awesome(pacs::FED_I3)),
-                    Distro::Arch(_distro) => Ok(Self::Awesome(pacs::ARCH_I3)),
+                    Distro::Debian(_distro) => Ok(Self::Awesome(pacs::DEB_AWE)),
+                    Distro::Fedora(_distro) => Ok(Self::Awesome(pacs::FED_AWE)),
+                    Distro::Arch(_distro) => Ok(Self::Awesome(pacs::ARCH_AWE)),
                     Distro::Unknown => Ok(Self::Awesome(&[""])),
                 }
             Ok('b') | Ok('B') =>

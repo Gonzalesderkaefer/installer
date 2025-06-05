@@ -1,6 +1,5 @@
 // Used modules
 use std::{
-    env::{self, VarError},
     fs,
     os::unix::fs::symlink,
     path::Path,
@@ -12,7 +11,6 @@ use crate::{utils::fileutils as fu, FgColor};
 pub struct Ignored {
     src: String,
     dest: String,
-    name: String,
 }
 
 impl Ignored {
@@ -21,32 +19,22 @@ impl Ignored {
     ///
     /// # Example
     /// ```
-    /// // paths have to be relative to $HOME
-    /// let ign = Ignored::new("/Jazzian/dotfiles/vim", ".config/vim", "vim")
-    ///         .expect("Failed to get Environment variable");
+    /// // paths have to be absolute
+    /// let ign = Ignored::new(
+    ///     "/home/urname/Jazzian/dotfiles/vim",
+    ///     "/home/urname/.config/vim",
+    ///     "vim"
+    /// );
     /// ```
     ///
-    /// Returns an Err if determining $HOME fails.
-    pub fn new(src: &str, dest: &str, name: &str) -> Result<Self, VarError> {
-        // Get $HOME
-        let homedir = {
-            match env::var("HOME") {
-                Ok(dir) => dir,
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-        };
-
-
+    ///
+    pub fn new(src: &str, dest: &str) -> Self {
         // Build source directory
         let mut srcbuf = String::new();
-        srcbuf.push_str(&homedir);
         srcbuf.push_str(src);
 
         // Build dest directory
         let mut destbuf = String::new();
-        destbuf.push_str(&homedir);
         destbuf.push_str(dest);
 
 
@@ -54,9 +42,8 @@ impl Ignored {
         let result = Ignored {
             src: srcbuf,
             dest: destbuf,
-            name: String::from(name),
         };
-        return Ok(result);
+        return result;
     }
 
 
@@ -66,14 +53,22 @@ impl Ignored {
     ///
     /// # Example
     /// ```
-    /// // paths have to be relative to $HOME
-    /// let ign = Ignored::new("/Jazzian/dotfiles/vim", ".config/vim", "vim")
-    ///         .expect("Failed to get Environment variable");
+    /// // paths have to be absolute
+    /// let ign = Ignored::new(
+    ///     "/home/urname/Jazzian/dotfiles/vim",
+    ///     "/home/urname/.config/vim",
+    ///     "vim"
+    /// );
     /// 
     /// // This creates a symlink with the name of dest and the value of src
     /// ign.apply(Transfer::Link);
     /// ```
-    pub fn apply(&self, method: Transfer) {
+    pub fn apply(&self, method: &Transfer) {
+        // If src and dest are empty, nothing needs to be done
+        if self.src.len() == 0 || self.dest.len() == 0 {
+            return;
+        }
+
         // Create paths
         let srcpath = Path::new(&self.src);
         let destpath = Path::new(&self.dest);
@@ -93,7 +88,7 @@ impl Ignored {
         }
 
 
-        // Check if destination does not exists
+        // Check that destination does not exist
         match fs::exists(destpath) {
             Ok(false) => {},
             Ok(true) => {
@@ -143,7 +138,7 @@ impl Ignored {
                     let _ = fs::copy(srcpath, destpath);
                 }
             }
-            _ => {}
+            Transfer::None => {}
         }
     }
 }

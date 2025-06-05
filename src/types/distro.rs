@@ -1,6 +1,6 @@
 // Used modules
 use std::fs;
-use crate::{packages as pacs, FgColor};
+use crate::packages as pacs;
 
 
 
