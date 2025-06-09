@@ -78,7 +78,7 @@ pub static CUSTOMIZED: &'static [(&str, &str, u32)] =
     // Customized shell files
     (".customized.sh", CUSTOMIZED_SH, 0o644),
     (".customrc", "", 0o644),
-    ("customenv",  "export BROWSER_PREFIX=\"firefox\"", 0o644),
+    (".customenv",  "export BROWSER_PREFIX=\"firefox\"", 0o644),
 
 
     // X11 Startup

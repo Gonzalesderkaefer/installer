@@ -128,13 +128,23 @@ fn move_files(
 
         // Add dot if the dest should be hidden
         if hidden {
-            complete_dest_buf.push(".");
+            // Append basename with dots at the beginning
+            let mut basename = OsString::from(".");
+            basename.push(&dirent.file_name());
+
+            complete_dest_buf.push(&basename);
+        } else {
+            // Append basename
+            complete_dest_buf.push(dirent.file_name());
         }
-
-        // Append basenames
+        // Append basename unchanged for the source since it's not hidden
         complete_src_buf.push(dirent.file_name());
-        complete_dest_buf.push(dirent.file_name());
 
+        println!(
+            "{:?} to {:?}",
+            complete_src_buf.as_os_str(),
+            complete_dest_buf.as_os_str()
+        );
 
         // Check for transfer method
         match &sys.transfer {
