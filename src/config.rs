@@ -14,9 +14,7 @@ pub static BINDEST: &'static str = ".local/bin/";
 
 
 /// Predifined file contents
-pub static CUSTOMIZED_SH: &'static str = "killshells() {\n\
-        pkill -KILL -u $USER -t tty1\n\
-    }\n\
+pub static CUSTOMIZED_SH: &'static str = "killshells() { pkill -KILL -u $USER -t tty1 }\n\
     export BROWSER_PREFIX=\"firefox\"\n\
     [ \"$(tty)\" = \"/dev/tty1\" ] && (startx; killshells)\n";
 
