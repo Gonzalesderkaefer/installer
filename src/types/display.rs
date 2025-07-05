@@ -1,5 +1,5 @@
 // Used modules
-use crate::{utils::menu::print_menu, FgColor};
+use crate::{utils::{fileutils::get_all_sub_paths, menu::print_menu}, FgColor};
 use super::distro::Distro;
 use crate::packages as pacs;
 use std::{fs::{self, read_dir, OpenOptions}, io::{self, Write}, path::PathBuf};
@@ -102,72 +102,32 @@ impl WlComp {
                     }
                 }
 
-                // Open dir for reading
-                let source_dir = {
-                    match read_dir(&config_dir) { // Error checking
-                        Ok(dir) => dir,
-                        Err(e) => {
-                            println!(
-                                "{}Unable to read dir {e:?}{}",
-                                FgColor!(Red),
-                                FgColor!());
-                            return;
-                        }
+                // Get all sub paths to the config directory
+                let mut config_files: Vec<String> = Vec::new();
+                get_all_sub_paths(config_dir.as_path(), &mut config_files);
+
+
+                // This string holds the complete concatination of the 
+                // files
+                let mut all_content = String::new();
+
+
+                // Concat everything into all_content
+                for config_module in config_files {
+                    if ! config_module.ends_with(".kdl") {
+                        continue;
                     }
-                };
-
-                // This stores the contents of all files
-                // in the config directory 
-                let mut complete_contents = String::new();
-
-                for dirent in source_dir {
-                    // Get element
-                    let elem = match dirent {
-                        Ok(data) => data,
-                        Err(e) => {
-                            println!(
-                                "{}Unable to get dirent {e:?}{}",
-                                FgColor!(Red),
-                                FgColor!());
-                            continue;
+                    match fs::read_to_string(config_module) {
+                        Ok(cont) => {
+                            all_content.push_str(&cont.as_str());
                         },
-                    };
-
-                    // Get file type
-                    let file_type = {
-                        match elem.file_type() {
-                            Ok(ft) => ft,
-                            Err(e) => {
-                                println!(
-                                    "{}Unable to get file type {e:?}{}",
-                                    FgColor!(Red),
-                                    FgColor!());
-                                continue;
-                            }
-                        }
-                    };
-
-                    if file_type.is_file() {
-                        let file_string = match fs::read_to_string(elem.path()) {
-                            Ok(string) => string,
-                            Err(e) => {
-                                println!(
-                                    "{}Unable to read file {e:?}{}",
-                                    FgColor!(Red),
-                                    FgColor!());
-                                continue;
-                            }
-                        };
-
-                        // Push file string to complete stirng
-                        complete_contents.push_str(&file_string);
-                        complete_contents.push('\n');
+                        Err(_) => continue,
                     }
+                    all_content.push('\n'); // For readablity
                 }
 
                 // Open config file for writing
-                let mut new_config_file = match 
-                    OpenOptions::new()
+                let mut new_config_file = match OpenOptions::new()
                         .write(true)
                         .create(true)
                         .open(config_file) {
@@ -181,13 +141,16 @@ impl WlComp {
                         }
                     };
 
-                if let Err(e) = new_config_file.write(complete_contents.as_bytes()) {
+
+                // Write to newly created file
+                if let Err(e) = new_config_file.write(all_content.as_bytes()) {
                     println!(
                         "{}Unable to open read to file {e:?}{}",
                         FgColor!(Red),
                         FgColor!());
                     return;
                 }
+
             },
         }
     }
