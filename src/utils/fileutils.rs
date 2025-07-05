@@ -5,6 +5,62 @@ use std::{
 
 use crate::FgColor;
 
+
+pub fn get_all_sub_paths(dir: &Path, paths: &mut Vec<String>){
+    // this is the dir as a string
+    let dir_string  = match dir.to_str() {
+        Some(s) => s.to_string(),
+        None => "".to_string(),
+    };
+
+
+
+    // Open dir for reading
+    let par_dir = {
+        match fs::read_dir(&dir_string) { // Error checking
+            Ok(dir) => dir,
+            Err(e) => {
+                println!(
+                    "{}Unable to read dir {e:?}{}",
+                    FgColor!(Red),
+                    FgColor!());
+                return;
+            }
+        }
+    };
+
+
+    for dirent in par_dir {
+        // Get element
+        let elem = match dirent {
+            Ok(data) => data,
+            Err(e) => {
+                println!(
+                    "{}Unable to get dirent {e:?}{}",
+                    FgColor!(Red),
+                    FgColor!());
+                continue;
+            },
+        };
+
+        // Push path to paths
+        paths.push(match elem.path().to_str() {
+            Some(e) => e.to_string(),
+            None => String::new(),
+        });
+
+
+        // If dirent is a directory, call this function
+        // recursively on that directory
+        if let Ok(typ) = elem.file_type() {
+            if typ.is_dir() {
+                get_all_sub_paths(elem.path().as_path(), paths);
+            }
+        }
+    }
+}
+
+
 pub fn copy_dir_all(src: &Path, dest: &Path) {
     // Check if src exists
     match fs::exists(src) {
