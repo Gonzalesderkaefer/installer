@@ -165,6 +165,7 @@ impl<'a> System <'a> {
                         WlComp::Hyprland(items) => items,
                         WlComp::River(items) => items,
                         WlComp::Sway(items) => items,
+                        WlComp::Niri(items) => items,
                     }
                 };
                 // Append Compositor packages
@@ -299,5 +300,9 @@ impl<'a> System <'a> {
             }
             None => {}
         }
+    }
+
+    pub fn init(&self) {
+        DspServer::init(&self.display);
     }
 }

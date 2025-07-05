@@ -214,6 +214,9 @@ fn make_customized(sys: &System) {
         }
         types::display::DspServer::Wayland(wl_comp, _) => {
             match wl_comp {
+                types::display::WlComp::Niri(_) => 
+                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (niri;"),
+
                 types::display::WlComp::Hyprland(_) => 
                     search_replace("\\&\\& \\(.*;", customizedpath, "&& (Hyprland;"),
 
@@ -262,7 +265,9 @@ fn main() {
     // Move shell files
     move_files(&sys, "Jazzian/dotfiles/config/shell", "", &ignored, true);
 
-
     // Create customized files
     make_customized(&sys);
+
+    // Initialize
+    sys.init();
 }

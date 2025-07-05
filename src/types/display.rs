@@ -1,8 +1,8 @@
 // Used modules
-use crate::utils::menu::print_menu;
+use crate::{utils::menu::print_menu, FgColor};
 use super::distro::Distro;
 use crate::packages as pacs;
-use std::io;
+use std::{fs::{self, read_dir, OpenOptions}, io::{self, Write}, path::PathBuf};
 
 /// This enum reprresents a Wayland compositor
 /// this compositor has an array of packages that are associated
@@ -11,6 +11,7 @@ pub enum WlComp {
     Hyprland(&'static[&'static str]),
     River(&'static[&'static str]),
     Sway(&'static[&'static str]),
+    Niri(&'static[&'static str]),
 }
 impl WlComp {
     /// This function returns A [WlComp] which contains an array
@@ -19,12 +20,21 @@ impl WlComp {
         let chares = print_menu(
             "Please choose a compositor",
             &[
+                "[N]iri",
                 "[H]yprland",
                 "[R]iver",
                 "[S]way (Default)",
             ],
         );
         match chares {
+            Ok('n') | Ok('N') =>
+                match distro {
+                    Distro::Debian(_distro) => Ok(Self::Sway(pacs::DEB_SWAY)),
+                    Distro::Fedora(_distro) => Ok(Self::Niri(pacs::FED_NIR)),
+                    Distro::Arch(_distro) => Ok(Self::Niri(pacs::ARCH_NIR)),
+                    Distro::Unknown => Ok(Self::Niri(&[""])),
+                }
+
             Ok('h') | Ok('H') =>
                 match distro {
                     Distro::Debian(_distro) => Ok(Self::Sway(pacs::DEB_SWAY)),
@@ -47,6 +57,137 @@ impl WlComp {
                     Distro::Unknown => Ok(Self::Sway(&[""])),
                 },
             Err(e) => Err(e),
+        }
+    }
+
+    /// This function runs any code for the specified window manager
+    /// It is used to 'initialize' that Window manager
+    fn init(&self) {
+        match self {
+            WlComp::Hyprland(_) => {}
+            WlComp::River(_) => {},
+            WlComp::Sway(_) => {},
+            WlComp::Niri(_) => {
+                // Get home
+                let hme = {
+                    match std::env::var("HOME") {
+                        Ok(h) => h,
+                        Err(_) => {
+                            return;
+                        }
+                    }
+                };
+
+                // Build config dir for niri
+                let mut config_dir = PathBuf::new();
+                config_dir.push(&hme);
+                config_dir.push(".config/niri");
+
+                // Build default config file
+                let mut config_file = PathBuf::new();
+                config_file.push(&hme);
+                config_file.push(".config/niri/config.kdl");
+                // Delete file if it exists
+                if let Ok(true) = fs::exists(&config_file) {
+                    match fs::remove_file(&config_file) {
+                        Ok(_) => {}
+                        Err(e) => {
+                            println!(
+                                "{}Unable to delete file {e:?}{}",
+                                FgColor!(Red),
+                                FgColor!());
+                            return;
+
+                        },
+                    }
+                }
+
+                // Open dir for reading
+                let source_dir = {
+                    match read_dir(&config_dir) { // Error checking
+                        Ok(dir) => dir,
+                        Err(e) => {
+                            println!(
+                                "{}Unable to read dir {e:?}{}",
+                                FgColor!(Red),
+                                FgColor!());
+                            return;
+                        }
+                    }
+                };
+
+                // This stores the contents of all files
+                // in the config directory 
+                let mut complete_contents = String::new();
+
+                for dirent in source_dir {
+                    // Get element
+                    let elem = match dirent {
+                        Ok(data) => data,
+                        Err(e) => {
+                            println!(
+                                "{}Unable to get dirent {e:?}{}",
+                                FgColor!(Red),
+                                FgColor!());
+                            continue;
+                        },
+                    };
+
+                    // Get file type
+                    let file_type = {
+                        match elem.file_type() {
+                            Ok(ft) => ft,
+                            Err(e) => {
+                                println!(
+                                    "{}Unable to get file type {e:?}{}",
+                                    FgColor!(Red),
+                                    FgColor!());
+                                continue;
+                            }
+                        }
+                    };
+
+                    if file_type.is_file() {
+                        let file_string = match fs::read_to_string(elem.path()) {
+                            Ok(string) => string,
+                            Err(e) => {
+                                println!(
+                                    "{}Unable to read file {e:?}{}",
+                                    FgColor!(Red),
+                                    FgColor!());
+                                continue;
+                            }
+                        };
+
+                        // Push file string to complete stirng
+                        complete_contents.push_str(&file_string);
+                        complete_contents.push('\n');
+                    }
+                }
+
+                // Open config file for writing
+                let mut new_config_file = match 
+                    OpenOptions::new()
+                        .write(true)
+                        .open(config_file) {
+                        Ok(f) => f,
+                        Err(e) => {
+                            println!(
+                                "{}Unable to open file for writing {e:?}{}",
+                                FgColor!(Red),
+                                FgColor!());
+                            return;
+                        }
+                    };
+
+                if let Err(e) = new_config_file.write(complete_contents.as_bytes()) {
+                    println!(
+                        "{}Unable to open read to file {e:?}{}",
+                        FgColor!(Red),
+                        FgColor!());
+                    return;
+                }
+            },
         }
     }
 }
@@ -94,6 +235,14 @@ impl XorgWM {
                     Distro::Unknown => Ok(Self::I3(&[""])),
                 },
             Err(e) => Err(e),
+        }
+    }
+
+    fn init(&self) {
+        match &self {
+            XorgWM::Awesome(_items) => {}
+            XorgWM::Bspwm(_items) => {}
+            XorgWM::I3(_items) => {}
         }
     }
 }
@@ -159,6 +308,19 @@ impl DspServer {
             }
 
             Err(_) => todo!(),
+        }
+    }
+
+    pub fn init(&self) {
+        match &self {
+            DspServer::Xorg(xorg_wm, _items) => {
+                XorgWM::init(xorg_wm);
+            }
+            DspServer::Wayland(wl_comp, _items) => {
+                WlComp::init(wl_comp);
+            }
+            DspServer::Desktop => {
+            }
         }
     }
 }

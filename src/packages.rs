@@ -226,6 +226,10 @@ pub const FED_SWAY: &'static[&'static str] = &[
   "i3blocks",
 ];
 
+pub const FED_NIR: &'static[&'static str] = &[
+  "niri",
+  "waybar",
+];
 
 pub const ARCH_DESKTOP: &'static[&'static str] = &[
     "flatpak",
@@ -348,4 +352,9 @@ pub const ARCH_RIV: &'static[&'static str] = &[
 pub const ARCH_SWAY: &'static[&'static str] = &[
   "sway",
   "i3blocks",
+];
+
+pub const ARCH_NIR: &'static[&'static str] = &[
+  "niri",
+  "waybar",
 ];
