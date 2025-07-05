@@ -295,14 +295,48 @@ impl<'a> System <'a> {
                         );
                     }
                 }
-
-
             }
             None => {}
         }
     }
 
     pub fn init(&self) {
+        // Initialize for display server
         DspServer::init(&self.display);
+
+
+        // NOTE: might put this in System as a new parameter
+
+        // switch shell
+        println!("{}Going to switch shell to zsh{}", FgColor!(Green), FgColor!());
+        let switchres = Command::new("chsh")
+            .args(["-s", "/usr/bin/zsh"])
+            .spawn();
+
+        let mut switch = {
+            match switchres {
+                Ok(x) => x,
+                Err(e) => {
+                    println!(
+                        "{}Subproc creation failed: {e:?}{}", 
+                        FgColor!(Red),
+                        FgColor!(),
+                    );
+                    return ;
+                },
+            }
+        };
+
+        // Wait for subproc to finish
+        match switch.wait() {
+            Ok(_) => {}
+            Err(e) => {
+                println!(
+                    "{}Command was not running {e:?}{}",
+                    FgColor!(Red),
+                    FgColor!(),
+                );
+            }
+        }
     }
 }
