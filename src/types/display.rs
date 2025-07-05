@@ -169,6 +169,7 @@ impl WlComp {
                 let mut new_config_file = match 
                     OpenOptions::new()
                         .write(true)
+                        .create(true)
                         .open(config_file) {
                         Ok(f) => f,
                         Err(e) => {
