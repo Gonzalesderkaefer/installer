@@ -2,7 +2,7 @@
 use crate::{utils::{fileutils::get_all_sub_paths, menu::print_menu}, FgColor};
 use super::distro::Distro;
 use crate::packages as pacs;
-use std::{fs::{self, read_dir, OpenOptions}, io::{self, Write}, path::PathBuf};
+use std::{fs::{self, OpenOptions}, io::{self, Write}, path::PathBuf};
 
 /// This enum reprresents a Wayland compositor
 /// this compositor has an array of packages that are associated
