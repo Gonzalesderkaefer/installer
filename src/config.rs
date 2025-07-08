@@ -65,12 +65,12 @@ pub static GTK3_CONFIG: &'static str = "[Settings]\n\
 pub static CUSTOMIZED: &'static [(&str, &str, u32)] =
 &[
     // Customized files for window managers/compositors
-    (".config/i3/customzied/customzied", "", 0o644),
-    (".config/bspwm/customzied/customzied", "", 0o644),
-    (".config/awesome/customzied/customzied.lua", "", 0o644),
-    (".config/sway/customzied/customzied", "", 0o644),
-    (".config/hypr/customzied/customzied", "", 0o644),
-    (".config/river/customzied/customzied", "", 0o644),
+    (".config/i3/customized/customized", "", 0o644),
+    (".config/bspwm/customized/customized", "", 0o644),
+    (".config/awesome/customized/customized.lua", "", 0o644),
+    (".config/sway/customized/customized", "", 0o644),
+    (".config/hypr/customized/customized", "", 0o644),
+    (".config/river/customized/customized", "", 0o644),
 
 
     // Customized shell files
