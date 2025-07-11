@@ -15,7 +15,6 @@ pub static BINDEST: &'static str = ".local/bin/";
 
 /// Predifined file contents
 pub static CUSTOMIZED_SH: &'static str = "killshells() { pkill -KILL -u $USER -t tty1 }\n\
-    export BROWSER_PREFIX=\"firefox\"\n\
     [ \"$(tty)\" = \"/dev/tty1\" ] && (startx; killshells)\n";
 
 pub static _DEBMDMENU: &'static str = "#!/usr/bin/sh\n\
@@ -71,6 +70,7 @@ pub static CUSTOMIZED: &'static [(&str, &str, u32)] =
     (".config/sway/customized/customized", "", 0o644),
     (".config/hypr/customized/customized", "", 0o644),
     (".config/river/customized/customized", "", 0o644),
+    (".config/niri/customized/customized.kdl", "", 0o644),
 
 
     // Customized shell files
