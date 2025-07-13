@@ -217,7 +217,11 @@ pub fn search_replace(tosearch: &str, path: &Path, replace: &str){
         match regex::Regex::new(tosearch) {
             Ok(regex) => regex,
             Err(_) => {
-                return ();
+                println!(
+                    "{}Invalid pattern{}",
+                    FgColor!(Red),
+                    FgColor!());
+                return;
             },
         }
     };
