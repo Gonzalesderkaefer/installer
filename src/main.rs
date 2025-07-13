@@ -1,7 +1,5 @@
 // Modules declarations
-mod packages;
-mod types;
-mod formatting;
+mod packages; mod types; mod formatting;
 mod utils;
 mod config;
 
@@ -183,6 +181,11 @@ fn make_customized(sys: &System) {
     for tup in config::CUSTOMIZED {
         create_customized(tup.0, tup.1, tup.2);
     }
+    // Regex pattern for .customized.sh
+    let cpattern = r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec (niri|sway|Hyprland|river|startx)"#;
+
+    // Regex pattern for .xinitrc
+    let xpattern = r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec (i3|awesome|bspwm)"#;
 
     // Getting home
     let home = sys.home.clone();
@@ -195,7 +198,7 @@ fn make_customized(sys: &System) {
 
     match &sys.display {
         types::display::DspServer::Xorg(xorg_wm, _) => {
-            search_replace("\\&\\& \\(.*;", customizedpath, "startx");
+            search_replace(cpattern, customizedpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec startx"#);
             // Build customized.sh path
             let mut xinitbuf = PathBuf::new();
             xinitbuf.push(&home);
@@ -204,32 +207,32 @@ fn make_customized(sys: &System) {
 
             match xorg_wm {
                 types::display::XorgWM::Awesome(_) =>
-                    search_replace("exec .*", xinitpath, "exec awesome"),
+                    search_replace(xpattern, xinitpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec awesome"#),
                 types::display::XorgWM::Bspwm(_) =>
-                    search_replace("exec .*", xinitpath, "exec bspwm"),
+                    search_replace(xpattern, xinitpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec bspwm"#),
                 types::display::XorgWM::I3(_) =>
-                    search_replace("exec .*", xinitpath, "exec i3"),
+                    search_replace(xpattern, xinitpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec i3"#),
 
             }
         }
         types::display::DspServer::Wayland(wl_comp, _) => {
             match wl_comp {
                 types::display::WlComp::Niri(_) => 
-                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (niri;"),
+                    search_replace(cpattern, customizedpath,  r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec niri"#),
 
                 types::display::WlComp::Hyprland(_) => 
-                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (Hyprland;"),
+                    search_replace(cpattern, customizedpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec Hyprland"#),
 
                 types::display::WlComp::River(_) => 
-                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (river;"),
+                    search_replace(cpattern, customizedpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec river"#),
 
                 types::display::WlComp::Sway(_) => 
-                    search_replace("\\&\\& \\(.*;", customizedpath, "&& (sway;"),
+                    search_replace(cpattern, customizedpath, r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec sway"#),
 
             }
         }
         types::display::DspServer::Desktop => {
-            search_replace("\\&\\& \\(.*\\)", customizedpath, "");
+            search_replace(cpattern, customizedpath, r#"## \[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec sway"#);
         },
     }
 }
@@ -270,4 +273,36 @@ fn main() {
 
     // Initialize
     sys.init();
+
+    /*
+    let cmdline = String::from(r#"[ "$(tty)" = "/dev/tty1" ] && exec niri"#);
+
+    let cpattern = r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec (niri|sway|Hyprland|river|startx)"#;
+    let xpattern = r#"\[ "\$\(tty\)" = "/dev/tty1" \] \&\& exec (i3|awesome|bspwm)"#;
+
+    // Compile regex
+    let re = {
+        match regex::Regex::new(&cpattern) {
+            Ok(regex) => regex,
+            Err(_) => {
+                println!(
+                    "{}Invalid pattern{}",
+                    FgColor!(Red),
+                    FgColor!());
+                return;
+            },
+        }
+    };
+
+    let mat = {
+        match re.find(&cmdline) {
+            Some(val) => val,
+            None => {
+                println!("Could not find pattern \'{cpattern}\' in {cmdline}");
+                return;
+            }
+        }
+    };
+    */
+
 }

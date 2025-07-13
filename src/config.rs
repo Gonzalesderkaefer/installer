@@ -15,7 +15,7 @@ pub static BINDEST: &'static str = ".local/bin/";
 
 /// Predifined file contents
 pub static CUSTOMIZED_SH: &'static str = "killshells() { pkill -KILL -u $USER -t tty1 }\n\
-    [ \"$(tty)\" = \"/dev/tty1\" ] && (startx; killshells)\n";
+    [ \"$(tty)\" = \"/dev/tty1\" ] && exec startx\n";
 
 pub static _DEBMDMENU: &'static str = "#!/usr/bin/sh\n\
                   if [ $XDG_SESSION_TYPE = \"wayland\" ]; then\n\
